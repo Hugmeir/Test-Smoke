@@ -424,7 +424,8 @@ sub Configure {
         $self->_run( qq/\@configure -"des" $vms_cfg/ );
         $makefile = 'DESCRIP.MMS';
     } else {
-        $self->_run( "./Configure -des $config" );
+        my $pre = $^O eq 'android' ? 'sh' : '';
+        $self->_run( "$pre ./Configure -des $config" );
         $makefile = 'Makefile';
     }
     return -f $makefile;

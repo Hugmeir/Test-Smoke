@@ -231,7 +231,11 @@ Check C</proc/cpuinfo> for these keys:
 sub linux_arm {
     my $self = shift;
 
-    $self->{__cpu_count} = $self->count_in_cpuinfo(qr/^processor\s+:\s+/i);
+    # Take care not to miscount when the output of
+    # cpuinfo is something like
+    # Processor	: ARMv7 Processor rev 9 (v7l)
+    # processor	: 0
+    $self->{__cpu_count} = $self->count_in_cpuinfo(qr/^processor\s+:\s+[0-9]+/i);
 
     my $cpu = $self->from_cpuinfo('Processor');
     my $bogo = $self->from_cpuinfo('BogoMIPS');

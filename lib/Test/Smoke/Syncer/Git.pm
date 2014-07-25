@@ -70,13 +70,13 @@ sub sync {
     chdir $self->{gitdir} or croak("Cannot chdir($self->{gitdir}): $!");
 
     # SMOKE_ME
-    my $gitout = $gitbin->run(pull => '--all');
+    my $gitout = $gitbin->run(fetch => "--prune");
     $self->{v} > 1 and print $gitout;
 
     $gitout = $gitbin->run(remote => prune => 'origin');
     $self->{v} > 1 and print $gitout;
 
-    $gitout = $gitbin->run(checkout => $gitbranch, '2>&1');
+    $gitout = $gitbin->run(checkout => "origin/$gitbranch", '2>&1');
     $self->{v} > 1 and print $gitout;
 
     chdir $cwd or croak("Cannot chdir($cwd): $!");
@@ -84,8 +84,11 @@ sub sync {
     if ( ! -d $self->{ddir} || ! -d catdir($self->{ddir}, '.git') ) {
         # It needs to be empty ...
         my $cloneout = $gitbin->run(
+            ($^O ne 'android' ? (
             clone         => $self->{gitdir},
             '--reference' => $self->{gitdir},
+            )
+            : ( clone     => $self->{gitorigin})),
             $self->{ddir},
             '2>&1'
         );
@@ -103,11 +106,11 @@ sub sync {
     $gitout = $gitbin->run(clean => '-dfx');
     $self->{v} > 1 and print $gitout;
 
-    $gitout = $gitbin->run(pull => '--all');
+    $gitout = $gitbin->run(fetch => '--prune');
     $self->{v} > 1 and print $gitout;
 
     # SMOKE_ME
-    $gitout = $gitbin->run(checkout => $gitbranch, '2>&1');
+    $gitout = $gitbin->run(checkout => "origin/$gitbranch", '2>&1');
     $self->{v} > 1 and print $gitout;
 
     my $mk_dot_patch = Test::Smoke::Util::Execute->new(

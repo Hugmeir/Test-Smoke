@@ -8,6 +8,7 @@ use base 'Exporter';
 our @EXPORT_OK = qw( &sysinfo &tsuname );
 
 use Test::Smoke::SysInfo::AIX;
+use Test::Smoke::SysInfo::Android;
 use Test::Smoke::SysInfo::BSD;
 use Test::Smoke::SysInfo::Cygwin;
 use Test::Smoke::SysInfo::Darwin;
@@ -72,6 +73,7 @@ sub new {
     $^O =~ /solaris|sunos|osf/i and return Test::Smoke::SysInfo::Solaris->new();
     $^O =~ /VMS/                and return Test::Smoke::SysInfo::VMS->new();
     $^O =~ /mswin32|windows/i   and return Test::Smoke::SysInfo::Windows->new();
+    $^O =~ /android/i           and return Test::Smoke::SysInfo::Android->new();
 
     return Test::Smoke::SysInfo::Generic->new();;
 }

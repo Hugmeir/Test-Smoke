@@ -898,7 +898,7 @@ sub get_ncpu {
             last OS_CHECK;
         };
 
-        /linux/i && do {
+        /linux|android/i && do {
             my @output; local *PROC;
             if ( open PROC, "< /proc/cpuinfo" ) {
                 @output = grep /^processor/ => <PROC>;

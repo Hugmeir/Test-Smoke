@@ -2374,6 +2374,7 @@ sub find_a_patch {
     my $patch_bin;
     foreach my $patch (qw( gpatch npatch patch )) {
         $patch_bin = whereis( $patch ) or next;
+        return $patch_bin if $^O eq 'android';
         my $version = `$patch_bin -version`;
         $? or return $patch_bin;
     }
